@@ -1,11 +1,22 @@
 Package: trapos
 Type: Package
-Title: What the Package Does (Title Case)
+Title: TRAnsport POSition
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Date: 2019-05-31
+Authors@R: c(
+  person(given = "Sergio", family = "Ibarra-Espinosa",
+         role = c("aut", "cre"),
+         email = "sergio.ibarra@usp.br",
+         comment = c(ORCID = "0000-0002-3162-1905"))) 
+Description: Process GPS data from vehicles.
+License: GPL
+URL: https://ibarraespinosa/trapos/
+BugReports: https://ibarraespinosa/trapos/issues/
+LazyData: no
+Depends: R (>= 3.5.0)
+Imports: sf, data.table, geosphere, units,  utils
+Suggests: knitr, rmarkdown, testthat, covr, lwgeom, cptcity
+RoxygenNote: 6.1.1
 Encoding: UTF-8
-LazyData: true
+NeedsCompilation: no
+Packaged: 2019-05-31 06:38:10 UTC; sergio
