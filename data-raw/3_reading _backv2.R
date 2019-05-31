@@ -1,4 +1,4 @@
-setwd("/home/sergio/INVENTARIOS/SP_veh")
+setwd("data-raw")
 library(sf)
 library(data.table)
 library(units)
@@ -10,14 +10,18 @@ hora2 <- as.POSIXct(readRDS("dados/flow/hora.rds"),
 	            format = "%Y-%m-%d_%H")
 attr(hora2, "tzone") <- "America/Sao_Paulo"
 hora3 <- strftime(hora2, format = "%Y-%m-%d_%H")
+hora <- list("2014-10-06_18")
+hora3 <- "2014-10-06_18"
+
 # Corregir datos
-pts <- readRDS("~/Dropbox/count/df.rds")
+pts <- readRDS("dados/counts.rds")
 
 # red
-net <- st_transform(st_read("shapefiles/roads.shp"), crs = 31983)
+net <- st_transform(st_read("shapefiles/roads.gpkg"), crs = 31983)
 net <- net[net$highway != "road" & net$highway != "residential", ]
-regiones
-regiones <- st_read("/home/sergio/INVENTARIOS/PHD/shapefiles/regiones.shp")
+
+regiones <- st_read("shapefiles/regiones.gpkg")
+
 regiones <- st_transform(regiones, 31983)
  net <- st_intersection(net, regiones)
 net$lengthm <- st_length(
@@ -27,9 +31,9 @@ net$lengthm <- st_length(
 )
 net$LKM <- set_units(net$lengthm, km)
 
-for (i in 1:144) {
+for (i in 1:length(hora)) {
 vel <- as.list(
-  list.files(path = "dados/flow", 
+  list.files(path = "dados/flow",
              pattern = glob2rx(paste0("fluxo*",hora[[i]],"*")),
              full.names = T)
 )
@@ -38,19 +42,19 @@ vel <- as.list(
 vel1 <- data.table(do.call("rbind",  lapply(vel, readRDS)))
 
 #Velocida por todos los vehiculos
-speed <- vel1[ , .(mean(VelTipoMean, na.rm = T),   
-		   median(VelTipoMedian, na.rm = T), 
-		   quantile(VTq75, .75, na.rm = T), 
+speed <- vel1[ , .(mean(VelTipoMean, na.rm = T),
+		   median(VelTipoMedian, na.rm = T),
+		   quantile(VTq75, .75, na.rm = T),
                    max(VMax, na.rm = T)),
               by = .(id)]
 
 names(speed) <- c("id", "VALLmean", "VALLMedian", "VALLQ75", "VALLMax")
 
 #Esta velocidad es mas interesante por que es por tipo de vehiculo
-flow <- vel1[ , .(sum(vei, na.rm = T), 
+flow <- vel1[ , .(sum(vei, na.rm = T),
 		  mean(VelTipoMean, na.rm = T),
-		  median(VelTipoMedian, na.rm = T), 
-		  quantile(VTq75, .75, na.rm = T), 
+		  median(VelTipoMedian, na.rm = T),
+		  quantile(VTq75, .75, na.rm = T),
                   max(VMax, na.rm = T)),,
                by = .(id, tipo)]
 names(flow) <- c("id", "tipo", "vei" ,"VMedia", "VMedian", "VTQ75", "VMax")
@@ -72,37 +76,37 @@ names(Result) <- c("id", "VALLmean", "VALLmedian","VALLQ75", "VALLMax",
 aggregate(as.numeric(as.character(net$lanes)),
           by = list(net$highway), mean, na.rm = T)
 net$lanes <- ifelse(
-  is.na(net$lanes) & 
+  is.na(net$lanes) &
 	net$highway == "motorway",round(2.690727),
   ifelse(
-    is.na(net$lanes) & 
+    is.na(net$lanes) &
 	net$highway == "motorway_link", round(1.299677),
     ifelse(
-      is.na(net$lanes) & 
+      is.na(net$lanes) &
 	net$highway == "trunk", round(2.995162),
       ifelse(
-        is.na(net$lanes) & 
+        is.na(net$lanes) &
 	net$highway == "trunk_link", round(1.849498),
         ifelse(
-          is.na(net$lanes) & 
+          is.na(net$lanes) &
 	net$highway == "primary", round(2.690727),
           ifelse(
-            is.na(net$lanes) & 
+            is.na(net$lanes) &
 	net$highway == "primary_link",round(1.484009),
             ifelse(
-              is.na(net$lanes) & 
+              is.na(net$lanes) &
 	net$highway == "secondary", round(2.159727),
               ifelse(
-                is.na(net$lanes) & 
+                is.na(net$lanes) &
 	net$highway == "secondary_link", round(1.415282),
                 ifelse(
-                  is.na(net$lanes) & 
+                  is.na(net$lanes) &
 	net$highway == "tertiary", round(1.985048),
                   ifelse(
-                    is.na(net$lanes) & 
+                    is.na(net$lanes) &
 	net$highway == "tertiary_link", round(1.379562),
                     ifelse(
-                      is.na(net$lanes) & 
+                      is.na(net$lanes) &
 	net$highway == "residential", round(1.792322),
                       net$lanes
                     )))))))))))
@@ -113,7 +117,7 @@ aggregate(neto$VALLmean , by = list(neto$highway), mean, na.rm = T)
 
 df <- aggregate(cbind(pts$X12A89,
                       (pts$X12C782x+pts$X12C783x+pts$X12C784x),
-                      pts$X12V89), 
+                      pts$X12V89),
           by = list(pts$lanes.1, pts$highway), mean)
 names(df) <- c( "lanes", "ts", "PC", "Trucks","V")
 df$ra <- df$PC/df$V
@@ -125,7 +129,7 @@ table(neto$lanes)
 
 df1 <- aggregate(cbind(pts$X12A89,
                 (pts$X12C782x+pts$X12C783x+pts$X12C784x),
-                pts$X12V89), 
+                pts$X12V89),
           by = list(pts$highway), mean)
 df1$tv <- df1$V2/df1$V3
 df1$pcv <- df1$V1/df1$V3
@@ -133,7 +137,7 @@ print(df1)
 neto$TruckCor <- ifelse(
   neto$highway == "motorway_link" | neto$highway == "motorway" |
     neto$highway == "trunk_link" | neto$highway == "trunk",
-  	(123.60417/55.93750)*neto$VMediaTruck, 
+  	(123.60417/55.93750)*neto$VMediaTruck,
 		ifelse(
  		 neto$highway == "secondary" | neto$highway == "secondary_link",
  		 (2036.857/40.28571)*neto$VMediaTruck,
@@ -142,7 +146,7 @@ neto$TruckCor <- ifelse(
  			 (1202.000/20.00000)*neto$VMediaTruck,
 			neto$Truck)))
 
-### Velocidad Corregida #### 
+### Velocidad Corregida ####
 # Tengo muchos tipos de velocidad
 # corregire por los variso tipos y despues comparare para ver
 # que correcion queda mejor dependiendo de la velocidad
@@ -621,7 +625,7 @@ print(sum(neto$CarCorVMaxTaxi, na.rm = T)/1000000)
 # Guardar RDS ####
 neto$hora <- hora3[i]
 saveRDS(neto,  #original
-        paste0("RDS/VCOR/","flow_", hora[i], ".rds") 
+        paste0("RDS/VCOR/","flow_", hora[i], ".rds")
                )
 #rm(neto)
 print(hora[i])
