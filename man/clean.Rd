@@ -32,7 +32,7 @@ returns data.table}
 }
 \examples{
 \dontrun{
-clean()
+a <- clean()
 }
 }
 \seealso{
