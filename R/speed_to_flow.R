@@ -277,8 +277,8 @@ speed_to_flow <- function(net,
                       net$CarsCor
                     ))))))))))
 
-  # Trunks ####
-  net$TrunksCor <- 0
+  # Trucks ####
+  net$TrucksCor <- 0
   # motorway
   m1 <- cet[cet$highway == "motorway", ]
 

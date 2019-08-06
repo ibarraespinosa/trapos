@@ -24,6 +24,7 @@ fill_data <- function(net,
                       what = "lanes",
                       by = "highway",
                       FUN = "mean"){
+  net[[what]] <-as.numeric(as.character(net[[what]]))
 
   df <- aggregate(net[[what]],
                   by = list(net[[by]]),

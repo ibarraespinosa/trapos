@@ -55,7 +55,7 @@
 #' @format A data frame:
 #' \describe{
 #'   \item{highway}{Open Street Map type of street}
-#'   \item{Lanes}{number of lanes from 1 to 10}
+#'   \item{lanes}{number of lanes from 1 to 10}
 #'   \item{Cars_veh_h}{Number of vehicles per hour}
 #'   \item{Speed_km_h}{Average speed (km/h)}
 #'   \item{Cars_Speed}{Ratio Cars and Speed}
