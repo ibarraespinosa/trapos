@@ -26,11 +26,11 @@
 #' }
 clean <- function(input_file = "data-raw/dados/000000000000.csv",
                   output_file,
-                  timezone = "Etc/UTC",
+                  timezone = "Etc/UTC", #America/Sao_Paulo
                   n = 5,
                   max_speed = 110.0,
                   max_acceleration = 10.0,
-                  coords = c(x = "lon", y = "lat"),
+                  coords = c("lat", "lon"),
                   crs = 4326,
                   verbose = TRUE){
   # input
@@ -52,8 +52,9 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
   dt_in_gps_data$time <- as.POSIXct(dt_in_gps_data$time,
                                     format = "%Y-%m-%d %H:%M:%S",
                                     tz = "Etc/UTC" )
+  dt_in_gps_data$LT <- dt_in_gps_data$time
   # Timezone
-  attr(dt_in_gps_data$time, "tzone") <- timezone
+  attr(dt_in_gps_data$LT, "tzone") <- timezone
 
   # lags
   time <- NULL

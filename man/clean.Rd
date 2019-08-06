@@ -6,8 +6,8 @@
 \usage{
 clean(input_file = "data-raw/dados/000000000000.csv", output_file,
   timezone = "Etc/UTC", n = 5, max_speed = 110,
-  max_acceleration = 10, coords = c(x = "lon", y = "lat"),
-  crs = 4326, verbose = TRUE)
+  max_acceleration = 10, coords = c("lat", "lon"), crs = 4326,
+  verbose = TRUE)
 }
 \arguments{
 \item{input_file}{Character with location of '.csv', or data.table or data.frame
