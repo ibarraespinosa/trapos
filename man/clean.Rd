@@ -4,7 +4,7 @@
 \alias{clean}
 \title{Reads, cleans  and filter GPS data-set}
 \usage{
-clean(input_file = "data-raw/dados/000000000000.csv", output_file,
+clean(input_file = "data-raw/dados/000000000000.csv", type, output_file,
   timezone = "Etc/UTC", n = 5, max_speed = 110,
   max_acceleration = 10, coords = c("lat", "lon"), crs = 4326,
   verbose = TRUE)
@@ -14,6 +14,8 @@ clean(input_file = "data-raw/dados/000000000000.csv", output_file,
 with gps data. The following colnames are required: "veh", "type", "time",
 "lon", "lat". "veh" id for each vehicle. "type" type of each vehicle,
 "time" character with format "2014-10-10 08:06:40".}
+
+\item{type}{filter type}
 
 \item{output_file}{Character to store resulting data.table as .csv. If missing
 returns data.table}

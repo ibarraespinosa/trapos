@@ -6,6 +6,7 @@
 #' with gps data. The following colnames are required: "veh", "type", "time",
 #' "lon", "lat". "veh" id for each vehicle. "type" type of each vehicle,
 #' "time" character with format "2014-10-10 08:06:40".
+#' @param type filter type
 #' @param output_file Character to store resulting data.table as .csv. If missing
 #' returns data.table
 #' @param timezone timezone
@@ -25,6 +26,7 @@
 #' a <- clean()
 #' }
 clean <- function(input_file = "data-raw/dados/000000000000.csv",
+                  type,
                   output_file,
                   timezone = "Etc/UTC", #America/Sao_Paulo
                   n = 5,
@@ -47,7 +49,10 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
   }
   if(verbose) message("Renaming data.table... \n")
   names(dt_in_gps_data) <- c("veh", "type", "time", "lon", "lat")
-
+  if(!missing(type)) {
+    if(verbose) message("Filtering data.table... \n")
+    dt_in_gps_data <- dt_in_gps_data[type == type]
+  }
   if(verbose) message("Transforming character time in POSIXct... \n")
   dt_in_gps_data$time <- as.POSIXct(dt_in_gps_data$time,
                                     format = "%Y-%m-%d %H:%M:%S",
