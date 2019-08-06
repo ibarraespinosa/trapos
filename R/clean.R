@@ -12,6 +12,8 @@
 #' @param n Integer, minimum number of consecutive observations by veh
 #' @param max_speed Numeric, Maximum speed default 110 km/h
 #' @param max_acceleration Numeric, Maximum acceleration default 10 m/s^2
+#' @param coords in case of point data: names or numbers of the numeric columns holding coordinates
+#' @param crs coordinate reference system
 #' @param verbose logical, to show more information
 #' @importFrom  data.table fread as.data.table ":=" shift .N
 #' @importFrom units as_units
@@ -28,6 +30,8 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
                   n = 5,
                   max_speed = 110.0,
                   max_acceleration = 10.0,
+                  coords = c(x = "lon", y = "lat"),
+                  crs = 4326,
                   verbose = TRUE){
   # input
   if(class(input_file) == "character"){
@@ -131,10 +135,17 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
   # Original Date: 2019-05-31
   # Changed Date: 2019-08-05
   dt_in_gps_data$speed <- abs(dt_in_gps_data$speed)
+
   b <- nrow(dt_in_gps_data)
   if(verbose) message(paste0(round(100*(a - b)/a, 2),
                              " % dont have acceleration <= ", max_acceleration,
                              " and speed <= ", max_speed," \n"))
+  # Changed Date: 2019-08-05
+  # sf
+  sdf <- sf::st_as_sf(dt_in_gps_data, coords = coords, crs = 4326)
+  sdf[[coords[1]]] <- dt_in_gps_data[[coords[1]]]
+  sdf[[coords[2]]] <- dt_in_gps_data[[coords[2]]]
+  dt_in_gps_data <- sdf
   # output
   if(missing(output_file)){
     return(dt_in_gps_data)

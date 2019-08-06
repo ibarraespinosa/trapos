@@ -6,7 +6,8 @@
 \usage{
 clean(input_file = "data-raw/dados/000000000000.csv", output_file,
   timezone = "Etc/UTC", n = 5, max_speed = 110,
-  max_acceleration = 10, verbose = TRUE)
+  max_acceleration = 10, coords = c(x = "lon", y = "lat"),
+  crs = 4326, verbose = TRUE)
 }
 \arguments{
 \item{input_file}{Character with location of '.csv', or data.table or data.frame
@@ -24,6 +25,10 @@ returns data.table}
 \item{max_speed}{Numeric, Maximum speed default 110 km/h}
 
 \item{max_acceleration}{Numeric, Maximum acceleration default 10 m/s^2}
+
+\item{coords}{in case of point data: names or numbers of the numeric columns holding coordinates}
+
+\item{crs}{coordinate reference system}
 
 \item{verbose}{logical, to show more information}
 }
