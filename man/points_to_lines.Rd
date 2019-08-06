@@ -19,7 +19,7 @@ IF lat lon, degree, if projected [m]}
 }
 \note{
 net must have a column name id to each street.
-sfpoints must include names "id", "veh", "type" and "speed".
+sfpoints must include names "id", "veh" and "speed".
 Use with UTM data (not lat lon)
 }
 \examples{

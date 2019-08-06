@@ -9,7 +9,7 @@
 #' @importFrom  data.table as.data.table
 #' @importFrom sf st_as_sf st_buffer st_intersection
 #' @note net must have a column name id to each street.
-#' sfpoints must include names "id", "veh", "type" and "speed".
+#' sfpoints must include names "id", "veh" and "speed".
 #' Use with UTM data (not lat lon)
 #' @export
 #' @seealso \code{\link{clean}}
@@ -42,7 +42,7 @@ points_to_lines <- function(sfpoints,
                       quantile(speed, .85, na.rm = T),
                       quantile(speed, .95, na.rm = T),
                       max(speed, na.rm = T)),
-                  by = .(id, type)]
+                  by = .(id)]
 
   names(fluxo) <- c("id", "type","veh", "MeanSpeed", "MedianSpeed",
                     "Q75Speed", "Q85SPeed", "Q95Speed", "MaxSpeed" )
