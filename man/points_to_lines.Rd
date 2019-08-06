@@ -26,11 +26,8 @@ Use with UTM data (not lat lon)
 \dontrun{
 a <- clean()
 a
-plot(a["type"], axes = T)
-library(vein)
-data(net)
-net$id <- 1:nrow(net@data)
-d <- points_to_lines(a, 1/102/47, net)
+plot(a["type"], axes = T, pch = 16, cex = 0.5, col = "red")
+d <- points_to_lines(a, 1/102/47, osm)
 plot(d[c("MeanSpeed")], axes = T)
 plot(d[c("MaxSpeed")], axes = T)
 }

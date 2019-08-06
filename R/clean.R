@@ -17,7 +17,7 @@
 #' @param crs coordinate reference system
 #' @param verbose logical, to show more information
 #' @importFrom  data.table fread as.data.table ":=" shift .N
-#' @importFrom units as_units
+#' @importFrom units as_units set_units
 #' @importFrom geosphere distHaversine
 #' @importFrom utils write.table
 #' @export
@@ -30,8 +30,8 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
                   output_file,
                   timezone = "Etc/UTC", #America/Sao_Paulo
                   n = 5,
-                  max_speed = 110.0,
-                  max_acceleration = 10.0,
+                  max_speed = units::as_units(110.0, "km/h"),
+                  max_acceleration = units::as_units(10.0, "m/s^2"),
                   coords = c("lat", "lon"),
                   crs = 4326,
                   verbose = TRUE){
@@ -114,6 +114,8 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
   # speeds
   if(verbose) message("Calculating speeds... \n")
   dt_in_gps_data[, "speed"  := dt_in_gps_data$delta_space/dt_in_gps_data$delta_time]
+
+
   dt_in_gps_data[, "lag_speed" := data.table::shift(x = dt_in_gps_data$speed,
                                                     n = 1,
                                                     type = 'lag')]
@@ -128,15 +130,16 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
                  "n" := .N,
                  by = "veh"]
   a <- nrow(dt_in_gps_data)
-  dt_in_gps_data <- dt_in_gps_data[ dt_in_gps_data$n >= 5]
+  dt_in_gps_data <- dt_in_gps_data[ dt_in_gps_data$n >= n]
   b <- nrow(dt_in_gps_data)
   if(verbose) message(paste0(round(100*(a - b)/a, 2),
                              " % dont have at least , ", n,
                              " obervations by 'veh' \n"))
-  # more filtering
+
+  # filtering speed and acceleration
   a <- nrow(dt_in_gps_data)
-  dt_in_gps_data <- dt_in_gps_data[abs(as.numeric(dt_in_gps_data$acceleration)) <= max_acceleration &
-                                     abs(as.numeric(dt_in_gps_data$speed)) <= max_speed, ]
+  dt_in_gps_data <- dt_in_gps_data[abs(dt_in_gps_data$acceleration) <= max_acceleration &
+                                     abs(dt_in_gps_data$speed) <= max_speed, ]
 
   # Original Date: 2019-05-31
   # Changed Date: 2019-08-05
@@ -146,7 +149,13 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
   if(verbose) message(paste0(round(100*(a - b)/a, 2),
                              " % dont have acceleration <= ", max_acceleration,
                              " and speed <= ", max_speed," \n"))
+
+  # converting speed in m/s to km/h
+  km <- h <- NULL
+  dt_in_gps_data$speed <- units::set_units(dt_in_gps_data$speed, km/h)
+
   # Changed Date: 2019-08-05
+  dt_in_gps_data <- as.data.frame(dt_in_gps_data)
   # sf
   sdf <- sf::st_as_sf(dt_in_gps_data, coords = coords, crs = 4326)
   sdf[[coords[1]]] <- dt_in_gps_data[[coords[1]]]

@@ -5,9 +5,9 @@
 \title{Reads, cleans  and filter GPS data-set}
 \usage{
 clean(input_file = "data-raw/dados/000000000000.csv", type, output_file,
-  timezone = "Etc/UTC", n = 5, max_speed = 110,
-  max_acceleration = 10, coords = c("lat", "lon"), crs = 4326,
-  verbose = TRUE)
+  timezone = "Etc/UTC", n = 5, max_speed = units::as_units(110,
+  "km/h"), max_acceleration = units::as_units(10, "m/s^2"),
+  coords = c("lat", "lon"), crs = 4326, verbose = TRUE)
 }
 \arguments{
 \item{input_file}{Character with location of '.csv', or data.table or data.frame
