@@ -127,6 +127,10 @@ clean <- function(input_file = "data-raw/dados/000000000000.csv",
   a <- nrow(dt_in_gps_data)
   dt_in_gps_data <- dt_in_gps_data[abs(as.numeric(dt_in_gps_data$acceleration)) <= max_acceleration &
                                      abs(as.numeric(dt_in_gps_data$speed)) <= max_speed, ]
+
+  # Original Date: 2019-05-31
+  # Changed Date: 2019-08-05
+  dt_in_gps_data$speed <- abs(dt_in_gps_data$speed)
   b <- nrow(dt_in_gps_data)
   if(verbose) message(paste0(round(100*(a - b)/a, 2),
                              " % dont have acceleration <= ", max_acceleration,
