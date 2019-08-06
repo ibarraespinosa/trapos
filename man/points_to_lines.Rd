@@ -4,12 +4,12 @@
 \alias{points_to_lines}
 \title{From points to lines}
 \usage{
-points_to_lines(sfpoints, dbuffer, net, verbose = TRUE)
+points_to_lines(sfpoints, dist, net, verbose = TRUE)
 }
 \arguments{
 \item{sfpoints}{spatial points from \code{\link{clean}}}
 
-\item{dbuffer}{buffer distance to intersect pointts with streets.
+\item{dist}{buffer distance to intersect pointts with streets.
 IF lat lon, degree, if projected [m]}
 
 \item{net}{Spatial roadnetwork}

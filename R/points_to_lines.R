@@ -3,7 +3,7 @@
 #'@description \code{\link{points_to_lines}} Aggregate points by street
 #'
 #' @param sfpoints spatial points from \code{\link{clean}}
-#' @param dbuffer buffer distance to intersect pointts with streets.
+#' @param dist buffer distance to intersect pointts with streets.
 #' IF lat lon, degree, if projected [m]
 #' @param net Spatial roadnetwork
 #' @importFrom  data.table as.data.table
@@ -25,13 +25,13 @@
 #' plot(d[c("MaxSpeed")], axes = T)
 #' }
 points_to_lines <- function(sfpoints,
-                            dbuffer,
+                            dist,
                             net,
                             verbose = TRUE){
   sfpoints <- sf::st_as_sf(sfpoints)
   net <- sf::st_as_sf(net)
 
-  vej_b10m <- sf::st_buffer(x = sfpoints, dist = dbuffer)
+  vej_b10m <- sf::st_buffer(x = sfpoints, dist = dist)
   vej <- sf::st_intersection(x = net, y = vej_b10m)
   vej <- data.table::as.data.table(vej)
   veiculo <- speed <- id <- type <- NULL
